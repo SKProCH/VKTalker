@@ -11,8 +11,10 @@ using System.Timers;
 using DynamicData;
 using DynamicData.Binding;
 using Flurl.Http;
+using Microsoft.Extensions.DependencyInjection;
 using ReactiveUI;
 using VkNet;
+using VkNet.AudioBypassService.Extensions;
 using VkNet.Enums.Filters;
 using VkNet.Enums.SafetyEnums;
 using VkNet.Model;
@@ -41,7 +43,7 @@ namespace VKTalker.ViewModels
         public ObservableCollectionExtended<MessageModel> MessageModels { get; } =
             new ObservableCollectionExtended<MessageModel>();
 
-        private VkApi api = new VkApi();
+        private VkApi api;
         private ReactiveCommand<Unit, Unit> authCommand { get; }
         private ReactiveCommand<Unit, Unit> dialogsDataCommand { get; }
         private ReactiveCommand<Unit, Unit> messagesDataCommand { get; }
@@ -52,6 +54,11 @@ namespace VKTalker.ViewModels
 
         public MainWindowViewModel(ConfigModel model)
         {
+            // TODO Extract VkApi creation from VM
+            var services = new ServiceCollection();
+            services.AddAudioBypass();
+            api = new VkApi(services);
+            
             _configModel = model;
             dialogList.Connect()
                 .ObserveOn(RxApp.MainThreadScheduler)
