@@ -32,7 +32,6 @@ namespace VKTalker.ViewModels
         private string _chatName, _messageText;
         private DialogModel _selectedModel;
         private ConfigModel _configModel;
-        private ConcurrentQueue<(string,string)> _photosQueue = new ConcurrentQueue<(string,string)>();
 
         /*public ObservableCollectionExtended<DialogModel> DialogModel { get; } =
             new ObservableCollectionExtended<DialogModel>();*/
@@ -48,7 +47,6 @@ namespace VKTalker.ViewModels
         private ReactiveCommand<Unit, Unit> dialogsDataCommand { get; }
         private ReactiveCommand<Unit, Unit> messagesDataCommand { get; }
         public ReactiveCommand<Unit, Unit> SendMessageCommand { get; }
-
 
         private long? ChatId { get; set; }
 
@@ -89,13 +87,6 @@ namespace VKTalker.ViewModels
                     ChatId = value?.ChatId;
                     ChatName = value?.Name;
                 });
-            Task.Run(async () =>
-            {
-                while (true)
-                {
-                    await PhotoLoad();
-                }
-            });
             authCommand.Execute().Subscribe();
         }
 
@@ -313,21 +304,8 @@ namespace VKTalker.ViewModels
                 : dialogLastMessage.Text;
         }
 
-        private string AddPhoto(string url, string id)
-        {
-            if (url is null) return null;
-            _photosQueue.Enqueue((url,id));
-            return id + ".jpg";
-        }
-
-        private async Task PhotoLoad()
-        {
-            if (!_photosQueue.TryDequeue(out var data)) return;
-            var name = data.Item2 + ".jpg";
-            if (!File.Exists(Path.Combine(PhotoFolder, name)))
-            {
-                await data.Item1.DownloadFileAsync(PhotoFolder, name);
-            }
+        private string AddPhoto(string url, string id) {
+            return url;
         }
     }
 }

@@ -1,9 +1,9 @@
-using System.IO;
-using System.Linq;
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
+using Splat;
 using VKTalker.Models;
+using VKTalker.Services;
 using VKTalker.ViewModels;
 using VKTalker.Views;
 
@@ -18,7 +18,7 @@ namespace VKTalker
 
         public override void OnFrameworkInitializationCompleted()
         {
-           
+            Locator.CurrentMutable.RegisterConstant(new DiskAndMemoryImageLoader(), typeof(IImageLoader));
             if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
                 desktop.MainWindow = new MainWindow
