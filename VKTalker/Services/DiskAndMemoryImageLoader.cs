@@ -1,18 +1,13 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.IO;
-using System.Net.Http;
-using System.Security.Cryptography;
-using System.Text;
 using System.Threading.Tasks;
-using Avalonia.Controls;
 using Avalonia.Media.Imaging;
-using Avalonia.Threading;
+using Flurl.Http;
 
 namespace VKTalker.Services {
     public class DiskAndMemoryImageLoader : IImageLoader {
         private readonly ConcurrentDictionary<string, Task<IBitmap?>> _memoryCache = new();
-        private readonly HttpClient _httpClient = new();
         public async Task<IBitmap?> LoadImageAsync(string url) {
             var bitmap = await _memoryCache.GetOrAdd(url, LoadImageInternalAsync);
             // If load failed - remove from cache and return
@@ -30,7 +25,7 @@ namespace VKTalker.Services {
             }
 
             try {
-                var imageBytes = await _httpClient.GetByteArrayAsync(url);
+                var imageBytes = await url.GetBytesAsync();
                 Directory.CreateDirectory("Cache/Images");
                 await File.WriteAllBytesAsync(fileName, imageBytes);
                 return new Bitmap(fileName);
