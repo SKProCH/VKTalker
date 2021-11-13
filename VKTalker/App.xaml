@@ -11,6 +11,6 @@
         <themes:BundledTheme BaseTheme="Light" PrimaryColor="Teal" SecondaryColor="Amber"/>
     </Application.Resources>
     <Application.Styles>
-        <StyleInclude Source="avares://Avalonia.Themes.Fluent/FluentLight.xaml"/>
+        <StyleInclude Source="avares://Material.Avalonia/Material.Avalonia.Templates.xaml" />
     </Application.Styles>
 </Application>
