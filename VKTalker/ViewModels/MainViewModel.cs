@@ -1,16 +1,11 @@
 ﻿using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.IO;
 using System.Linq;
 using System.Reactive;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
-using System.Timers;
 using DynamicData;
 using DynamicData.Binding;
-using Flurl.Http;
 using Microsoft.Extensions.DependencyInjection;
 using ReactiveUI;
 using VkNet;
@@ -21,10 +16,8 @@ using VkNet.Model;
 using VkNet.Model.RequestParams;
 using VKTalker.Models;
 
-namespace VKTalker.ViewModels
-{
-    public class MainWindowViewModel : ViewModelBase
-    {
+namespace VKTalker.ViewModels {
+    public class MainViewModel : ViewModelBase {
         private const int chatCount = 5;
         private const int messageCount = 100;
         public const string PhotoFolder = "Photos";
@@ -50,7 +43,7 @@ namespace VKTalker.ViewModels
 
         private long? ChatId { get; set; }
 
-        public MainWindowViewModel(ConfigModel model)
+        public MainViewModel(ConfigModel model)
         {
             // TODO Extract VkApi creation from VM
             var services = new ServiceCollection();
@@ -125,18 +118,19 @@ namespace VKTalker.ViewModels
 
         private async Task Auth()
         {
-            await api.AuthorizeAsync(new ApiAuthParams
-            {
-                Login = _configModel.Login,
-                Password = _configModel.Password,
-                ApplicationId = _configModel.AppId,
-                Settings = Settings.All
-            });
-            if (api.UserId != default(long))
-            {
-                IsEnabled = true;
-                await SetStartupDialog();
-            }
+            // TODO: Remove auth from main view model
+            // await api.AuthorizeAsync(new ApiAuthParams
+            // {
+            //     Login = _configModel.Login,
+            //     Password = _configModel.Password,
+            //     ApplicationId = _configModel.AppId,
+            //     Settings = Settings.All
+            // });
+            // if (api.UserId != default(long))
+            // {
+            //     IsEnabled = true;
+            //     await SetStartupDialog();
+            // }
         }
 
         private async Task SetStartupDialog()

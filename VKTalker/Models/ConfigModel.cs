@@ -7,8 +7,7 @@ namespace VKTalker.Models
     public class ConfigModel
     {
         public ulong AppId { get; set; }
-        public string Login { get; set; }
-        public string Password { get; set; }
+        public string? AccessToken { get; set; }
 
         public static ConfigModel CreateConfig(string filename)
         {
