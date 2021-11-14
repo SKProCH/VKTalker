@@ -16,6 +16,6 @@
     </Design.DataContext>
 
     <dialogHost:DialogHost Identifier="Main">
-        <ContentPresenter Content="{Binding ActiveViewModel, Mode=OneWay}"></ContentPresenter>
+        <ContentPresenter Name="HostContentPresenter" />
     </dialogHost:DialogHost>
 </Window>
