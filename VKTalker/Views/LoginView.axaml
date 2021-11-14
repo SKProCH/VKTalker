@@ -5,26 +5,58 @@
              xmlns:styles="clr-namespace:Material.Styles;assembly=Material.Styles"
              xmlns:assists="clr-namespace:Material.Styles.Assists;assembly=Material.Styles"
              xmlns:viewModels="clr-namespace:VKTalker.ViewModels"
+             xmlns:avalonia="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="VKTalker.Views.LoginView">
   <Design.DataContext>
     <viewModels:LoginViewModel />
   </Design.DataContext>
-  <styles:Card>
-    <Grid RowDefinitions="Auto 8 Auto 8 Auto" ColumnDefinitions="Auto *">
-      <TextBox Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="0"
-               assists:TextFieldAssist.Label="Телефон или email" />
-      <TextBox Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="2"
-               assists:TextFieldAssist.Label="Пароль" />
-      <Button Grid.Column="0" Grid.Row="4"
-              Command="{Binding LoginCommand}">
-        Войти
-      </Button>
-      <Button Grid.Column="1" Grid.Row="4"
-              Classes="Flat"
-              Command="{Binding ForgetPassword}">
-        Забыли пароль?
-      </Button>
+  <styles:Card VerticalAlignment="Center" HorizontalAlignment="Center" Width="380">
+    <Grid RowDefinitions="Auto Auto Auto Auto Auto">
+      <styles:ColorZone Margin="-8 -8 -8 8" Padding="16 8"
+                        Mode="PrimaryMid">
+        <TextBlock Classes="Headline5">Логин</TextBlock>
+      </styles:ColorZone>
+      <TextBox Grid.Column="0" Grid.Row="1" Margin="8 0 8 8"
+               Name="LoginTextBox"
+               assists:TextFieldAssist.Label="Телефон или email"
+               UseFloatingWatermark="True"
+               Text="{Binding Login}" />
+      <TextBox Grid.Column="0" Grid.Row="2" Margin="8 0 8 8"
+               Name="PasswordTextBox"
+               assists:TextFieldAssist.Label="Пароль"
+               UseFloatingWatermark="True" Classes="revealPasswordButton" PasswordChar="*"
+               Text="{Binding Password}" />
+      <styles:ColorZone Grid.Row="3" Grid.Column="0"
+                        Margin="-8 0 -8 8" Padding="16 8"
+                        IsVisible="{Binding IsWarningShown}"
+                        Mode="Accent">
+        <Grid>
+          <Grid ColumnDefinitions="Auto 8 *" IsVisible="{Binding IsLoading}">
+            <ProgressBar IsIndeterminate="True" Classes="Circle" />
+            <TextBlock Grid.Column="2" VerticalAlignment="Center" TextWrapping="Wrap">Загрузка</TextBlock>
+          </Grid>
+          <Grid ColumnDefinitions="Auto 8 *" IsVisible="{Binding !IsLoading}">
+            <avalonia:MaterialIcon Height="24" Width="24" 
+                                   Kind="Alert" />
+            <TextBlock Grid.Column="2"
+                       VerticalAlignment="Center" TextWrapping="Wrap"
+                       Text="{Binding ErrorText}" />
+          </Grid>
+        </Grid>
+      </styles:ColorZone>
+      <Grid Grid.Row="4" HorizontalAlignment="Center" Margin="0"
+            ColumnDefinitions="1* 1*">
+        <Button Grid.Column="0" IsDefault="True"
+                Command="{Binding LoginCommand}">
+          Войти
+        </Button>
+        <Button Grid.Column="1"
+                Classes="Flat" HorizontalAlignment="Left"
+                Command="{Binding OpenForgetPasswordPage}">
+          Забыли пароль?
+        </Button>
+      </Grid>
     </Grid>
   </styles:Card>
 </UserControl>

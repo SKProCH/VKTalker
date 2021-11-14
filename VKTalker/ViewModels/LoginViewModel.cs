@@ -1,5 +1,7 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 using System.Reactive;
+using System.Reactive.Linq;
 using System.Threading.Tasks;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
@@ -11,8 +13,8 @@ namespace VKTalker.ViewModels {
         private ILoginService _loginService;
         public LoginViewModel(ILoginService loginService) {
             _loginService = loginService;
-            LoginCommand = ReactiveCommand.CreateFromTask(LoginAsync, this.IsValid());
-            ForgetPassword = ReactiveCommand.Create(OpenForgetPasswordPage);
+            var canExecuteLogin = Observable.CombineLatest(this.IsValid(), this.WhenAnyValue(model => model.IsLoading), (b, b1) => b && !b1);
+            LoginCommand = ReactiveCommand.CreateFromTask(LoginAsync, canExecuteLogin);
 
             this.ValidationRule(model => model.Login,
                 s => !string.IsNullOrWhiteSpace(s),
@@ -20,19 +22,35 @@ namespace VKTalker.ViewModels {
             this.ValidationRule(model => model.Password,
                 s => !string.IsNullOrWhiteSpace(s),
                 "Пароль не может быть пустой строкой");
+
+            this.WhenAnyValue(model => model.IsLoading, model => model.ErrorText)
+                .Select(tuple => tuple.Item1 || !string.IsNullOrEmpty(tuple.Item2))
+                .BindTo(this, model => model.IsWarningShown);
         }
 
         private void OpenForgetPasswordPage() {
-            Process.Start("https://id.vk.com/restore/");
+            Utilities.OpenUrlInBrowser("https://id.vk.com/restore/");
         }
 
-        private Task LoginAsync() {
-            return _loginService.LoginAsync(Login, Password);
+        private async Task LoginAsync() {
+            try {
+                IsLoading = true;
+                await _loginService.LoginAsync(Login, Password);
+            }
+            catch (Exception e) {
+                ErrorText = e.Message ?? $"Что-то пошло не так: {e.GetType().Name}";
+            }
+            finally {
+                IsLoading = false;
+            }
         }
 
-        [Reactive] public string Login { get; set; } = "";
-        [Reactive] public string Password { get; set; } = "";
+        [Reactive] public string Login { get; set; } = null!;
+        [Reactive] public string Password { get; set; } = null!;
         public ReactiveCommand<Unit, Unit> LoginCommand { get; }
-        public ReactiveCommand<Unit, Unit> ForgetPassword { get; }
+
+        [Reactive] public bool IsWarningShown { get; set; }
+        [Reactive] public bool IsLoading { get; set; }
+        [Reactive] public string ErrorText { get; set; }
     }
 }

@@ -4,6 +4,6 @@ using ReactiveUI.Validation.Contexts;
 
 namespace VKTalker.ViewModels {
     public class ViewModelBase : ReactiveObject, IValidatableViewModel {
-        public ValidationContext ValidationContext { get; }
+        public ValidationContext ValidationContext { get; } = new ValidationContext();
     }
 }

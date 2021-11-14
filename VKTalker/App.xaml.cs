@@ -4,6 +4,7 @@ using Avalonia.Markup.Xaml;
 using Microsoft.Extensions.DependencyInjection;
 using Splat;
 using VkNet;
+using VkNet.Abstractions;
 using VkNet.AudioBypassService.Extensions;
 using VKTalker.Models;
 using VKTalker.Services;
@@ -25,7 +26,9 @@ namespace VKTalker
             SplatRegistrations.SetupIOC();
             SplatRegistrations.RegisterLazySingleton<IImageLoader, DiskAndMemoryImageLoader>();
             Locator.CurrentMutable.RegisterConstant(ConfigModel.CreateConfig("Config.json"), typeof(ConfigModel));
-            Locator.CurrentMutable.RegisterConstant(new VkApi(new ServiceCollection().AddAudioBypass()));
+            var vkApi = new VkApi(new ServiceCollection().AddAudioBypass());
+            Locator.CurrentMutable.RegisterConstant(vkApi);
+            Locator.CurrentMutable.RegisterConstant(vkApi, typeof(IVkApiAuth));
             SplatRegistrations.RegisterLazySingleton<ILoginService, VkLoginService>();
             
             // Register view models
