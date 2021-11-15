@@ -10,6 +10,7 @@ using VkNet.Model;
 namespace VKTalker.Services {
     public class VkLoginService : ILoginService {
         private Subject<bool> _clientStateChanged = new();
+        private BehaviorSubject<bool> _authorizationInProgressChanged = new(false);
         private VkApi _vkApiAuth;
         public VkLoginService(VkApi vkApiAuth) {
             _vkApiAuth = vkApiAuth;
@@ -18,6 +19,7 @@ namespace VKTalker.Services {
         public IObservable<bool> ClientStateChanged => _clientStateChanged.AsObservable();
         public bool IsAuthorized => _vkApiAuth.IsAuthorized;
         public string? AccessToken => _vkApiAuth.Token;
+        public IObservable<bool> AuthorizationInProgressChanged => _authorizationInProgressChanged.AsObservable();
         public Task LoginAsync(string accessToken) {
             return LoginAsyncInternal(new ApiAuthParams() { AccessToken = accessToken });
         }
@@ -29,13 +31,17 @@ namespace VKTalker.Services {
             return LoginAsyncInternal(apiAuthParams);
         }
 
-        private Task LoginAsyncInternal(ApiAuthParams apiAuthParams) {
-            return Task.Run(() => {
-                _vkApiAuth.LogOut();
+        private async Task LoginAsyncInternal(IApiAuthParams apiAuthParams) {
+            try {
+                _authorizationInProgressChanged.OnNext(true);
+                await _vkApiAuth.LogOutAsync();
                 _clientStateChanged.OnNext(IsAuthorized);
-                _vkApiAuth.Authorize(apiAuthParams);
+                await _vkApiAuth.AuthorizeAsync(apiAuthParams);
                 _clientStateChanged.OnNext(IsAuthorized);
-            });
+            }
+            finally {
+                _authorizationInProgressChanged.OnNext(false);
+            }
         }
 
         public Task LogoutAsync() {

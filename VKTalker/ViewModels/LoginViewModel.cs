@@ -15,8 +15,9 @@ namespace VKTalker.ViewModels {
         private ILoginService _loginService;
         public LoginViewModel(ILoginService loginService) {
             _loginService = loginService;
-            var canExecuteLogin = Observable.CombineLatest(this.IsValid(), this.WhenAnyValue(model => model.IsLoading), (b, b1) => b && !b1);
+            var canExecuteLogin = this.IsValid().CombineLatest(loginService.AuthorizationInProgressChanged, (b, b1) => b && !b1);
             LoginCommand = ReactiveCommand.CreateFromTask(LoginAsync, canExecuteLogin);
+            IsLoading = loginService.AuthorizationInProgressChanged;
 
             this.ValidationRule(model => model.Login,
                 s => !string.IsNullOrWhiteSpace(s),
@@ -25,8 +26,8 @@ namespace VKTalker.ViewModels {
                 s => !string.IsNullOrWhiteSpace(s),
                 "Пароль не может быть пустой строкой");
 
-            this.WhenAnyValue(model => model.IsLoading, model => model.ErrorText)
-                .Select(tuple => tuple.Item1 || !string.IsNullOrEmpty(tuple.Item2))
+            this.WhenAnyValue(model => model.ErrorText).CombineLatest(loginService.AuthorizationInProgressChanged)
+                .Select(tuple => tuple.Item2 || !string.IsNullOrEmpty(tuple.Item1))
                 .BindTo(this, model => model.IsWarningShown);
         }
 
@@ -36,14 +37,10 @@ namespace VKTalker.ViewModels {
 
         private async Task LoginAsync() {
             try {
-                IsLoading = true;
                 await _loginService.LoginAsync(Login, Password, GetTwoFactorAuthorizationCode);
             }
             catch (Exception e) {
                 ErrorText = e.Message ?? $"Что-то пошло не так: {e.GetType().Name}";
-            }
-            finally {
-                IsLoading = false;
             }
         }
 
@@ -63,9 +60,8 @@ namespace VKTalker.ViewModels {
         [Reactive] public string Login { get; set; } = null!;
         [Reactive] public string Password { get; set; } = null!;
         public ReactiveCommand<Unit, Unit> LoginCommand { get; }
-
+        public IObservable<bool> IsLoading { get; }
         [Reactive] public bool IsWarningShown { get; set; }
-        [Reactive] public bool IsLoading { get; set; }
-        [Reactive] public string ErrorText { get; set; }
+        [Reactive] public string? ErrorText { get; set; }
     }
 }

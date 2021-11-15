@@ -32,11 +32,11 @@
                         IsVisible="{Binding IsWarningShown}"
                         Mode="Accent">
         <Grid>
-          <Grid ColumnDefinitions="Auto 8 *" IsVisible="{Binding IsLoading}">
+          <Grid ColumnDefinitions="Auto 8 *" IsVisible="{Binding IsLoading^}">
             <ProgressBar IsIndeterminate="True" Classes="Circle" />
             <TextBlock Grid.Column="2" VerticalAlignment="Center" TextWrapping="Wrap">Загрузка</TextBlock>
           </Grid>
-          <Grid ColumnDefinitions="Auto 8 *" IsVisible="{Binding !IsLoading}">
+          <Grid ColumnDefinitions="Auto 8 *" IsVisible="{Binding !IsLoading^}">
             <avalonia:MaterialIcon Height="24" Width="24" 
                                    Kind="Alert" />
             <TextBlock Grid.Column="2"
