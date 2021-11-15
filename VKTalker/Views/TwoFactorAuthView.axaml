@@ -1,0 +1,45 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:styles="clr-namespace:Material.Styles;assembly=Material.Styles"
+             xmlns:assists="clr-namespace:Material.Styles.Assists;assembly=Material.Styles"
+             xmlns:viewModels="clr-namespace:VKTalker.ViewModels"
+             xmlns:avalonia="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
+             xmlns:dialogHost="clr-namespace:DialogHost;assembly=DialogHost.Avalonia"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="VKTalker.Views.TwoFactorAuthView"
+             Margin="0">
+  <Design.DataContext>
+    <viewModels:TwoFactorAuthViewModel />
+  </Design.DataContext>
+  <Grid RowDefinitions="Auto Auto Auto Auto" Width="300" Margin="8">
+    <styles:ColorZone Margin="-8 -8 -8 8" Padding="16 8"
+                      Mode="PrimaryMid">
+      <TextBlock Classes="Headline6">Проверка безопасности</TextBlock>
+    </styles:ColorZone>
+    <TextBlock Grid.Row="1" Margin="8 0 8 8"
+               TextWrapping="Wrap">
+      Пожалуйста, введите код из приложения для генерации кодов, чтобы подтвердить, что Вы владелец страницы.
+    </TextBlock>
+    <TextBox Grid.Row="2" Margin="8 0 8 8"
+             Name="LoginTextBox"
+             assists:TextFieldAssist.Label="Код"
+             UseFloatingWatermark="True"
+             Text="{Binding Code}" 
+             MaxLength="10"/>
+    <Grid Grid.Row="3" HorizontalAlignment="Center" Margin="0"
+          ColumnDefinitions="1* 1*">
+      <Button Grid.Column="0" IsDefault="True"
+              Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=dialogHost:DialogHost}, Path=CloseDialogCommand}"
+              CommandParameter="{Binding Code}">
+        Отправить
+      </Button>
+      <Button Grid.Column="1"
+              Classes="Flat" HorizontalAlignment="Left"
+              Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=dialogHost:DialogHost}, Path=CloseDialogCommand}">
+        Отмена
+      </Button>
+    </Grid>
+  </Grid>
+</UserControl>

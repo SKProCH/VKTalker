@@ -19,8 +19,12 @@ namespace VKTalker.Services {
         public Task LoginAsync(string accessToken) {
             return LoginAsyncInternal(new ApiAuthParams() { AccessToken = accessToken });
         }
-        public Task LoginAsync(string login, string password) {
-            return LoginAsyncInternal(ApiAuthParams.Format(7543317, login, password, Settings.All));
+        public Task LoginAsync(string login, string password, Func<string>? twoFactorAuthorization = null) {
+            var apiAuthParams = new ApiAuthParams() {
+                Login = login, Password = password, Settings = Settings.All,
+                TwoFactorAuthorization = twoFactorAuthorization, TwoFactorSupported = twoFactorAuthorization != null
+            };
+            return LoginAsyncInternal(apiAuthParams);
         }
 
         private Task LoginAsyncInternal(ApiAuthParams apiAuthParams) {

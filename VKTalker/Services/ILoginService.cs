@@ -6,7 +6,7 @@ namespace VKTalker.Services {
         IObservable<bool> ClientStateChanged { get; }
         bool IsAuthorized { get; }
         Task LoginAsync(string accessToken);
-        Task LoginAsync(string login, string password);
+        Task LoginAsync(string login, string password, Func<string>? twoFactorAuthorization = null);
         Task LogoutAsync();
     }
 }

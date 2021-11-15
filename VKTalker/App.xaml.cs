@@ -35,6 +35,7 @@ namespace VKTalker
             SplatRegistrations.Register<HostWindowViewModel, HostWindowViewModel>();
             SplatRegistrations.Register<LoginViewModel, LoginViewModel>();
             SplatRegistrations.Register<MainViewModel, MainViewModel>();
+            SplatRegistrations.Register<TwoFactorAuthViewModel, TwoFactorAuthViewModel>();
             
             // Trying perform auth
             // TODO: Wrap it into service

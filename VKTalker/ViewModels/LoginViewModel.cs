@@ -3,9 +3,11 @@ using System.Diagnostics;
 using System.Reactive;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
+using Avalonia.Threading;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using ReactiveUI.Validation.Extensions;
+using Splat;
 using VKTalker.Services;
 
 namespace VKTalker.ViewModels {
@@ -35,7 +37,7 @@ namespace VKTalker.ViewModels {
         private async Task LoginAsync() {
             try {
                 IsLoading = true;
-                await _loginService.LoginAsync(Login, Password);
+                await _loginService.LoginAsync(Login, Password, GetTwoFactorAuthorizationCode);
             }
             catch (Exception e) {
                 ErrorText = e.Message ?? $"Что-то пошло не так: {e.GetType().Name}";
@@ -43,6 +45,19 @@ namespace VKTalker.ViewModels {
             finally {
                 IsLoading = false;
             }
+        }
+
+        private string GetTwoFactorAuthorizationCode() {
+            var taskCompletionSource = new TaskCompletionSource<object?>();
+            Dispatcher.UIThread.Post(async () => {
+                taskCompletionSource.SetResult(await DialogHost.DialogHost.Show(Locator.Current.GetService<TwoFactorAuthViewModel>()!, "Main"));
+            });
+
+            var result = taskCompletionSource.Task.GetAwaiter().GetResult();
+            if (string.IsNullOrWhiteSpace(result as string)) {
+                throw new Exception("Ввод кода двухфакторной авторизации отменен");
+            }
+            return (result as string)!;
         }
 
         [Reactive] public string Login { get; set; } = null!;

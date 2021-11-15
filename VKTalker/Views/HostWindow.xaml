@@ -15,7 +15,7 @@
         <vm:HostWindowViewModel />
     </Design.DataContext>
 
-    <dialogHost:DialogHost Identifier="Main">
+    <dialogHost:DialogHost Identifier="Main" DialogMargin="0">
         <ContentPresenter Name="HostContentPresenter" />
     </dialogHost:DialogHost>
 </Window>
