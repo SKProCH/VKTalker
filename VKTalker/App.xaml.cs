@@ -30,6 +30,7 @@ namespace VKTalker
             Locator.CurrentMutable.RegisterConstant(vkApi);
             Locator.CurrentMutable.RegisterConstant(vkApi, typeof(IVkApiAuth));
             SplatRegistrations.RegisterLazySingleton<ILoginService, VkLoginService>();
+            SplatRegistrations.RegisterLazySingleton<IAuthToConfigBindingService, AuthToConfigBindingService>();
             
             // Register view models
             SplatRegistrations.Register<HostWindowViewModel, HostWindowViewModel>();
@@ -38,9 +39,7 @@ namespace VKTalker
             SplatRegistrations.Register<TwoFactorAuthViewModel, TwoFactorAuthViewModel>();
             
             // Trying perform auth
-            // TODO: Wrap it into service
-            var accessToken = Locator.Current.GetService<ConfigModel>()?.AccessToken;
-            if (accessToken != null) Locator.Current.GetService<ILoginService>()?.LoginAsync(accessToken);
+            _ = Locator.Current.GetService<IAuthToConfigBindingService>()?.TryLoginFromConfigAsync();
 
             if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
