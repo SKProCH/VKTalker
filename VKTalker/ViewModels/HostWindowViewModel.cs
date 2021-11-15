@@ -16,12 +16,19 @@ namespace VKTalker.ViewModels
             ActiveViewModel = Locator.Current.GetService<LoginViewModel>()!;
             this.WhenActivated(disposable => {
                 _loginService.ClientStateChanged
-                    .Select(b => (ViewModelBase)(b ? Locator.Current.GetService<MainViewModel>() : Locator.Current.GetService<LoginViewModel>())!)
+                    .Select(GetViewModel)
+                    .ObserveOn(RxApp.MainThreadScheduler)
                     .BindTo(this, model => model.ActiveViewModel)
                     .DisposeWith(disposable);
             });
         }
-        
+        private ViewModelBase GetViewModel(bool isAuthorized) {
+            if (isAuthorized)
+                return ActiveViewModel as MainViewModel ?? Locator.Current.GetService<MainViewModel>()!;
+            else
+                return ActiveViewModel as LoginViewModel ?? Locator.Current.GetService<LoginViewModel>()!;
+        }
+
         [Reactive] public ViewModelBase ActiveViewModel { get; set; }
     }
 }
