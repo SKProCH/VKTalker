@@ -6,8 +6,8 @@ using VKTalker.Models;
 namespace VKTalker.Services {
     class AuthToConfigBindingService : IAuthToConfigBindingService {
         private readonly ILoginService _loginService;
-        private readonly ConfigModel _configModel;
-        public AuthToConfigBindingService(ILoginService loginService, ConfigModel configModel) {
+        private readonly IConfig _configModel;
+        public AuthToConfigBindingService(ILoginService loginService, IConfig configModel) {
             _loginService = loginService;
             _configModel = configModel;
             _loginService.ClientStateChanged

@@ -25,7 +25,7 @@ namespace VKTalker
             // Registering services
             SplatRegistrations.SetupIOC();
             SplatRegistrations.RegisterLazySingleton<IImageLoader, DiskAndMemoryImageLoader>();
-            Locator.CurrentMutable.RegisterConstant(ConfigModel.CreateConfig("Config.json"), typeof(ConfigModel));
+            Locator.CurrentMutable.RegisterConstant(FileConfig.LoadOrCreate("Config.json"), typeof(IConfig));
             var vkApi = new VkApi(new ServiceCollection().AddAudioBypass());
             Locator.CurrentMutable.RegisterConstant(vkApi);
             Locator.CurrentMutable.RegisterConstant(vkApi, typeof(IVkApiAuth));

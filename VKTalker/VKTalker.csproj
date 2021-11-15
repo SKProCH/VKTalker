@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
         <OutputType>WinExe</OutputType>
-        <TargetFramework>netcoreapp3.0</TargetFramework>
+        <TargetFramework>netcoreapp3.1</TargetFramework>
         <LangVersion>preview</LangVersion>
         <Nullable>enable</Nullable>
     </PropertyGroup>
@@ -26,6 +26,7 @@
         <PackageReference Include="ReactiveUI.Fody" Version="16.3.10" />
         <PackageReference Include="ReactiveUI.Validation" Version="2.2.1" />
         <PackageReference Include="Splat.DependencyInjection.SourceGenerator" Version="1.1.33" PrivateAssets="all" />
+        <PackageReference Include="System.Configuration.ConfigurationManager" Version="6.0.0" />
         <PackageReference Include="VkNet" Version="1.67.0" />
         <PackageReference Include="VkNet.AudioBypassService" Version="1.7.1" />
     </ItemGroup>

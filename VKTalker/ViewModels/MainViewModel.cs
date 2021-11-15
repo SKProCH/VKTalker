@@ -15,6 +15,7 @@ using VkNet.Enums.SafetyEnums;
 using VkNet.Model;
 using VkNet.Model.RequestParams;
 using VKTalker.Models;
+using VKTalker.Services;
 
 namespace VKTalker.ViewModels {
     public class MainViewModel : ViewModelBase {
@@ -24,7 +25,7 @@ namespace VKTalker.ViewModels {
         private bool _isEnabled = false;
         private string _chatName, _messageText;
         private DialogModel _selectedModel;
-        private ConfigModel _configModel;
+        private IConfig _configModel;
 
         /*public ObservableCollectionExtended<DialogModel> DialogModel { get; } =
             new ObservableCollectionExtended<DialogModel>();*/
@@ -43,7 +44,7 @@ namespace VKTalker.ViewModels {
 
         private long? ChatId { get; set; }
 
-        public MainViewModel(ConfigModel model)
+        public MainViewModel(IConfig model)
         {
             // TODO Extract VkApi creation from VM
             var services = new ServiceCollection();

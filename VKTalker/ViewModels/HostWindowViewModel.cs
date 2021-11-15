@@ -13,7 +13,7 @@ namespace VKTalker.ViewModels
         private readonly ILoginService _loginService;
         public HostWindowViewModel(ILoginService loginService) {
             _loginService = loginService;
-            ActiveViewModel = Locator.Current.GetService<LoginViewModel>()!;
+            ActiveViewModel = GetViewModel(loginService.IsAuthorized);
             this.WhenActivated(disposable => {
                 _loginService.ClientStateChanged
                     .Select(GetViewModel)
