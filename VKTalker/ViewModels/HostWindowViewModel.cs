@@ -15,7 +15,8 @@ namespace VKTalker.ViewModels
             _loginService = loginService;
             ActiveViewModel = GetViewModel(loginService.IsAuthorized);
             this.WhenActivated(disposable => {
-                _loginService.ClientStateChanged
+                _loginService.ClientChanged
+                    .Select(l => l == null)
                     .Select(GetViewModel)
                     .ObserveOn(RxApp.MainThreadScheduler)
                     .BindTo(this, model => model.ActiveViewModel)

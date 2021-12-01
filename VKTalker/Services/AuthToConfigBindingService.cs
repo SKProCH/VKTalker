@@ -10,7 +10,7 @@ namespace VKTalker.Services {
         public AuthToConfigBindingService(ILoginService loginService, IConfig configModel) {
             _loginService = loginService;
             _configModel = configModel;
-            _loginService.ClientStateChanged
+            _loginService.ClientChanged
                 .Select(b => _loginService.AccessToken)
                 .Subscribe(SaveAccessTokenToConfig);
         }

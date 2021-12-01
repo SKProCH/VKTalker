@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using System.Threading.Tasks;
@@ -9,16 +10,17 @@ using VkNet.Model;
 
 namespace VKTalker.Services {
     public class VkLoginService : ILoginService {
-        private Subject<bool> _clientStateChanged = new();
+        private Subject<long?> _clientChanged = new();
         private BehaviorSubject<bool> _authorizationInProgressChanged = new(false);
         private VkApi _vkApiAuth;
         public VkLoginService(VkApi vkApiAuth) {
             _vkApiAuth = vkApiAuth;
         }
 
-        public IObservable<bool> ClientStateChanged => _clientStateChanged.AsObservable();
+        public IObservable<long?> ClientChanged => _clientChanged.AsObservable();
         public bool IsAuthorized => _vkApiAuth.IsAuthorized;
         public string? AccessToken => _vkApiAuth.Token;
+        public long? CurrentUserId { get; private set; }
         public IObservable<bool> AuthorizationInProgressChanged => _authorizationInProgressChanged.AsObservable();
         public Task LoginAsync(string accessToken) {
             return LoginAsyncInternal(new ApiAuthParams() { AccessToken = accessToken });
@@ -34,20 +36,20 @@ namespace VKTalker.Services {
         private async Task LoginAsyncInternal(IApiAuthParams apiAuthParams) {
             try {
                 _authorizationInProgressChanged.OnNext(true);
-                await _vkApiAuth.LogOutAsync();
-                _clientStateChanged.OnNext(IsAuthorized);
+                await LogoutAsync();
                 await _vkApiAuth.AuthorizeAsync(apiAuthParams);
-                _clientStateChanged.OnNext(IsAuthorized);
+                CurrentUserId = await _vkApiAuth.Users.GetAsync(Array.Empty<long>()).PipeAsync(users => users.First().Id);
+                _clientChanged.OnNext(CurrentUserId);
             }
             finally {
                 _authorizationInProgressChanged.OnNext(false);
             }
         }
 
-        public Task LogoutAsync() {
-            _vkApiAuth.LogOut();
-            _clientStateChanged.OnNext(IsAuthorized);
-            return Task.CompletedTask;
+        public async Task LogoutAsync() {
+            await _vkApiAuth.LogOutAsync();
+            CurrentUserId = null;
+            _clientChanged.OnNext(CurrentUserId);
         }
     }
 }
