@@ -16,19 +16,20 @@
         <AvaloniaResource Include="Assets\**" />
     </ItemGroup>
     <ItemGroup>
-        <PackageReference Include="Avalonia" Version="0.10.10" />
-        <PackageReference Include="Avalonia.Desktop" Version="0.10.10" />
-        <PackageReference Include="Avalonia.Diagnostics" Version="0.10.10" />
-        <PackageReference Include="Avalonia.ReactiveUI" Version="0.10.10" />
-        <PackageReference Include="Flurl" Version="3.0.2" />
-        <PackageReference Include="Flurl.Http" Version="3.2.0" />
-        <PackageReference Include="Material.Avalonia" Version="2.4.1.29-nightly" />
-        <PackageReference Include="ReactiveUI.Fody" Version="16.3.10" />
+        <PackageReference Include="Avalonia" Version="0.10.15" />
+        <PackageReference Include="Avalonia.Desktop" Version="0.10.15" />
+        <PackageReference Include="Avalonia.Diagnostics" Version="0.10.15" />
+        <PackageReference Include="Avalonia.ReactiveUI" Version="0.10.15" />
+        <PackageReference Include="Flurl" Version="3.0.6" />
+        <PackageReference Include="Flurl.Http" Version="4.0.0-pre2" />
+        <PackageReference Include="Material.Avalonia" Version="3.0.0-rc0.90-nightly" />
+        <PackageReference Include="Material.Icons.Avalonia" Version="1.0.2" />
+        <PackageReference Include="ReactiveUI.Fody" Version="18.1.8" />
         <PackageReference Include="ReactiveUI.Validation" Version="2.2.1" />
         <PackageReference Include="Splat.DependencyInjection.SourceGenerator" Version="1.1.33" PrivateAssets="all" />
         <PackageReference Include="System.Configuration.ConfigurationManager" Version="6.0.0" />
-        <PackageReference Include="VkNet" Version="1.67.0" />
-        <PackageReference Include="VkNet.AudioBypassService" Version="1.7.1" />
+        <PackageReference Include="VkNet" Version="1.69.0" />
+        <PackageReference Include="VkNet.AudioBypassService" Version="1.7.3" />
     </ItemGroup>
     <ItemGroup>
       <None Update="Config.json">
